@@ -23,7 +23,7 @@
          (let loop ((obj obj)
                     (color-list color-list))
            (cond
-             ((list? obj) 
+             ((and (list? obj) (not (null?  obj)))
                  (display (car color-list))
                  (display "(")
                  (display default-color)
