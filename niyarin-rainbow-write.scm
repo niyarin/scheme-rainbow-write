@@ -3,7 +3,8 @@
            (srfi 1)
            (scheme write))
 
-   (export write-rainbow display-rainbow rainbow-write-current-color  rainbow-write-theme-test)
+   (export write-rainbow display-rainbow rainbow-write-current-color  rainbow-write-theme-test
+           write-first-color display-first-color write-second-color display-second-color)
 
    (begin
 
@@ -61,14 +62,37 @@
              (else
                (write-display obj))))))
 
+      (define (write-display-nth-color obj write/display caxr port)
+        (display (caxr (rainbow-write-current-color)))
+        (write/display obj port)
+        (display default-color))
+
       (define (write-rainbow obj . opt-port)
-       (let ((port (if (null? opt-port) (current-input-port) (car opt-port))))
+       (let ((port (if (null? opt-port) (current-output-port) (car opt-port))))
          (write-display-rainbow obj write port)))
 
       (define (display-rainbow obj . opt-port)
-       (let ((port (if (null? opt-port) (current-input-port) (car opt-port))))
+       (let ((port (if (null? opt-port) (current-output-port) (car opt-port))))
          (write-display-rainbow obj display port)))
-     ))
+
+
+      (define (write-first-color obj . opt-port)
+         (let ((port (if (null? opt-port) (current-output-port) (car opt-port))))
+           jwrite-display-nth-color obj write car port))
+
+      (define (display-first-color obj . opt-port)
+         (let ((port (if (null? opt-port) (current-output-port) (car opt-port))))
+           (write-display-nth-color obj display car port)))
+
+      (define (write-second-color obj . opt-port)
+         (let ((port (if (null? opt-port) (current-output-port) (car opt-port))))
+           jwrite-display-nth-color obj write cadr port))
+
+      (define (display-second-color obj . opt-port)
+         (let ((port (if (null? opt-port) (current-output-port) (car opt-port))))
+           (write-display-nth-color obj display cadr port)))
+      
+      ))
 
 
 ;example
