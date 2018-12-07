@@ -3,9 +3,10 @@
            (srfi 1)
            (scheme write))
 
-   (export write-rainbow display-rainbow)
+   (export write-rainbow display-rainbow rainbow-write-current-color  rainbow-write-theme-test)
 
    (begin
+
      (define color-list
         (circular-list
             "\x1b[31m"
@@ -15,13 +16,16 @@
             "\x1b[35m"
             "\x1b[36m"))
 
+     (define rainbow-write-current-color
+       (make-parameter color-list))
+
      (define default-color
         "\x1b[39m")
 
      (define (write-display-rainbow obj write-display . opt-port)
        (let ((port (if (null? opt-port) (current-input-port) (car opt-port))))
          (let loop ((obj obj)
-                    (color-list color-list))
+                    (color-list (rainbow-write-current-color)))
            (cond
              ((and (list? obj) (not (null?  obj)))
                  (display (car color-list))
@@ -65,6 +69,7 @@
        (let ((port (if (null? opt-port) (current-input-port) (car opt-port))))
          (write-display-rainbow obj display port)))
      ))
+
 
 ;example
 ;
