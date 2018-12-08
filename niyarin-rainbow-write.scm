@@ -23,15 +23,15 @@
      (define default-color
         "\x1b[39m")
 
-     (define (write-display-rainbow obj write-display . opt-port)
+     (define (write-display-rainbow obj write/display . opt-port)
        (let ((port (if (null? opt-port) (current-input-port) (car opt-port))))
          (let loop ((obj obj)
                     (color-list (rainbow-write-current-color)))
            (cond
              ((and (list? obj) (not (null?  obj)))
-                 (display (car color-list))
-                 (display "(")
-                 (display default-color)
+                 (display (car color-list) port)
+                 (display "(" port)
+                 (display default-color port)
 
 
                  (let loop2 ((ls obj))
@@ -40,15 +40,15 @@
                         (loop (car ls) (cdr color-list)))
                      (else
                        (loop (car ls) (cdr color-list))
-                       (display " ")
+                       (display " " port)
                        (loop2 (cdr ls)))))
 
-                 (display (car color-list))
-                 (display ")")
-                 (display default-color))
+                 (display (car color-list) port)
+                 (display ")" port)
+                 (display default-color) port)
 
              ((vector? obj)
-                 (display "#(")
+                 (display "#(" port)
 
                   (unless (zero? (vector-length obj))
                      (let loop2 ((index 0))
@@ -58,14 +58,14 @@
                              (loop (vector-ref obj index) color-list)
                              (loop2 (+ index 1))))))
 
-                 (display ")"))
+                 (display ")" port))
              (else
-               (write-display obj))))))
+               (write/display obj port))))))
 
       (define (write-display-nth-color obj write/display caxr port)
-        (display (caxr (rainbow-write-current-color)))
+        (display (caxr (rainbow-write-current-color)) port)
         (write/display obj port)
-        (display default-color))
+        (display default-color) port)
 
       (define (write-rainbow obj . opt-port)
        (let ((port (if (null? opt-port) (current-output-port) (car opt-port))))
@@ -78,7 +78,7 @@
 
       (define (write-first-color obj . opt-port)
          (let ((port (if (null? opt-port) (current-output-port) (car opt-port))))
-           jwrite-display-nth-color obj write car port))
+           (write-display-nth-color obj write car port)))
 
       (define (display-first-color obj . opt-port)
          (let ((port (if (null? opt-port) (current-output-port) (car opt-port))))
@@ -86,7 +86,7 @@
 
       (define (write-second-color obj . opt-port)
          (let ((port (if (null? opt-port) (current-output-port) (car opt-port))))
-           jwrite-display-nth-color obj write cadr port))
+           (write-display-nth-color obj write cadr port)))
 
       (define (display-second-color obj . opt-port)
          (let ((port (if (null? opt-port) (current-output-port) (car opt-port))))
