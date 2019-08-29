@@ -65,7 +65,7 @@
       (define (write-display-nth-color obj write/display caxr port)
         (display (caxr (rainbow-write-current-color)) port)
         (write/display obj port)
-        (display default-color) port)
+        (display default-color port))
 
       (define (write-rainbow obj . opt-port)
        (let ((port (if (null? opt-port) (current-output-port) (car opt-port))))
